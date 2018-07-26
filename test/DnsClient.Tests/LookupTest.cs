@@ -971,5 +971,18 @@ namespace DnsClient.Tests
                 Assert.Equal(server.NSDName.Value.Substring(0, server.NSDName.Value.Length - 1), result.HostName);
             }
         }
+
+        [Fact]
+        public async Task GetIdnDomain()
+        {
+            var idn = new System.Globalization.IdnMapping();
+            var hostname = "åbningstider.info";
+            var client = new LookupClient(NameServer.GooglePublicDns);
+            
+
+            var dnsRes = client.Query($"_acme-challenge.{hostname}", QueryType.TXT);
+            var res = dnsRes.Answers.TxtRecords().FirstOrDefault()?.Text.FirstOrDefault();
+            Assert.NotEmpty(res);
+        }
     }
 }
